@@ -1,0 +1,46 @@
+# Checkout code: Clona el código del repositorio.
+# Set up Python: Configura la versión de Python.
+# Install dependencies: Instala las dependencias del proyecto desde el archivo requirements.txt.
+# Run tests: Ejecuta las pruebas automatizadas utilizando el comando pytest.
+# Code style check: Verifica el estilo de código utilizando la herramienta flake8.
+# Security scan: Realiza un escaneo de seguridad utilizando la herramienta bandit.
+# Deploy: Aquí puedes agregar los pasos necesarios para implementar tu proyecto en el entorno deseado.
+# Notify: Aquí puedes agregar los pasos para enviar notificaciones o generar reportes sobre el estado del flujo de trabajo.
+
+name: Build and Test
+
+# El workflow se va a ejecutar cuando se haga push o pull_request a las ramas main y develop
+on:
+  push:
+    branches:
+      - develop
+  pull_request:
+    branches:
+      - develop
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          # Colocar versión de Python utilizada en el proyecto de Kedro
+          python-version: 3.9
+
+      # Para proyectos Kedro. PATH: src/requirements.txt
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run tests
+        run: pytest
+
+      - name: Code style check
+        run: flake8 # Flake8, Pylint o Black
+
+      - name: Security scan
+        run: bandit -r src # Bandit, SonarQube o Snyk
